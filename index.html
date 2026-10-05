@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InterviewForge | AI Technical Interview & Code Assessment Simulator</title>
+  <meta name="description" content="Production-grade AI Technical Interview Simulator, live coding sandbox, automated test runner, and Big-O complexity analyzer." />
+
+  <!-- Google Fonts: JetBrains Mono for code + Inter for UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+
+  <!-- Top Navigation & Interview Controls -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo">
+        <div class="logo-hexagon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="16 18 22 12 16 6"></polyline>
+            <polyline points="8 6 2 12 8 18"></polyline>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <span class="brand-name">Interview<span class="gradient-text">Forge</span></span>
+          <span class="brand-tag">AI Code Assessment Engine</span>
+        </div>
+      </div>
+
+      <div class="session-badge">
+        <span class="live-dot"></span>
+        <span>SESSION ACTIVE • FAANG BENCHMARK</span>
+      </div>
+    </div>
+
+    <!-- Timer, Difficulty & Action Buttons -->
+    <div class="header-center">
+      <div class="timer-box" id="interview-timer" title="Session Timer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span id="timer-display">45:00</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="btn-timer-toggle" title="Pause / Resume Timer">Pause</button>
+    </div>
+
+    <div class="header-right">
+      <button class="btn btn-secondary btn-sm" id="btn-view-scorecard" title="View Full Evaluation Scorecard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Scorecard
+      </button>
+
+      <button class="btn btn-ghost btn-sm" id="btn-sound-toggle" title="Toggle Synthesized Sound FX">
+        <svg id="sound-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+
+      <a href="https://github.com/abhijaylg09/interview-forge" target="_blank" class="btn btn-secondary btn-sm github-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        Star on GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Three-Column Workspace -->
+  <main class="workspace-layout">
+
+    <!-- Column 1: Problem Specifications & AI Interviewer Dialogue -->
+    <section class="panel problem-panel" id="problem-panel">
+      <!-- Problem Header Tabs -->
+      <div class="panel-header-tabs">
+        <button class="tab-btn active" data-tab="tab-description">Problem</button>
+        <button class="tab-btn" data-tab="tab-ai-interviewer">
+          AI Interviewer
+          <span class="notification-dot" id="ai-chat-dot"></span>
+        </button>
+        <button class="tab-btn" data-tab="tab-hint">Hints (3)</button>
+      </div>
+
+      <!-- Tab Content: Description -->
+      <div class="tab-pane active" id="tab-description">
+        <div class="problem-meta-bar">
+          <div class="problem-selector-wrapper">
+            <label for="problem-select" class="sr-only">Select Interview Problem</label>
+            <select id="problem-select" class="problem-select">
+              <!-- Populated dynamically via JS -->
+            </select>
+          </div>
+          <span class="difficulty-pill medium" id="problem-difficulty">Medium</span>
+          <span class="category-pill" id="problem-category">Algorithms</span>
+        </div>
+
+        <h1 class="problem-title" id="problem-title">Two Sum & Hash Table Optimization</h1>
+
+        <div class="problem-body" id="problem-body">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="problem-section-title">Examples</div>
+        <div class="example-boxes" id="problem-examples">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="problem-section-title">Constraints</div>
+        <ul class="constraints-list" id="problem-constraints">
+          <!-- Populated dynamically -->
+        </ul>
+      </div>
+
+      <!-- Tab Content: AI Interviewer Chat -->
+      <div class="tab-pane" id="tab-ai-interviewer">
+        <div class="interviewer-profile">
+          <div class="interviewer-avatar">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="AI Interviewer" />
+            <span class="status-online"></span>
+          </div>
+          <div>
+            <div class="interviewer-name">Dr. Sarah Lin</div>
+            <div class="interviewer-role">Principal Staff Engineer & AI Evaluator</div>
+          </div>
+        </div>
+
+        <div class="chat-feed" id="chat-feed">
+          <!-- Live AI message conversation -->
+        </div>
+
+        <form class="chat-input-form" id="chat-input-form">
+          <input type="text" id="chat-input" placeholder="Explain your thought process or ask for advice..." autocomplete="off" />
+          <button type="submit" class="btn btn-primary btn-sm">Send</button>
+        </form>
+      </div>
+
+      <!-- Tab Content: Hints -->
+      <div class="tab-pane" id="tab-hint">
+        <div class="hints-container" id="hints-container">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 2: Interactive Code Editor Workspace -->
+    <section class="panel editor-panel" id="editor-panel">
+      <div class="editor-header">
+        <div class="editor-left-tools">
+          <select id="language-select" class="tool-select">
+            <option value="javascript">JavaScript (ES6+)</option>
+            <option value="python">Python 3.12</option>
+            <option value="typescript">TypeScript</option>
+          </select>
+          <span class="shortcut-tip">Ctrl+Enter to Run Tests</span>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn btn-ghost btn-sm" id="btn-reset-code" title="Reset to Initial Code Template">Reset</button>
+          <button class="btn btn-ghost btn-sm" id="btn-format-code" title="Clean & Format Code">Format</button>
+          <button class="btn btn-secondary btn-sm" id="btn-run-tests" title="Run Code Against Test Suite">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Run Code
+          </button>
+          <button class="btn btn-primary btn-sm btn-submit" id="btn-submit-code" title="Submit Solution for Evaluation">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Submit Solution
+          </button>
+        </div>
+      </div>
+
+      <!-- Code Editor Area -->
+      <div class="editor-wrapper">
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea id="code-editor" class="code-textarea" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      </div>
+
+      <!-- Bottom Status Bar -->
+      <div class="editor-footer">
+        <div class="footer-status" id="footer-status">Ready to evaluate code</div>
+        <div class="footer-stats">
+          <span id="char-count">0 chars</span>
+          <span>•</span>
+          <span id="line-count">1 line</span>
+          <span>•</span>
+          <span>Spaces: 2</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 3: Live Test Suite Runner & Big-O Complexity Inspector -->
+    <section class="panel results-panel" id="results-panel">
+      <div class="panel-header-tabs">
+        <button class="tab-btn active" data-tab="tab-testcases">
+          Test Cases
+          <span class="test-badge" id="test-summary-badge">0/3</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-complexity">Big-O & Efficiency</button>
+        <button class="tab-btn" data-tab="tab-scorecard-preview">Evaluation</button>
+      </div>
+
+      <!-- Tab Content: Test Cases -->
+      <div class="tab-pane active" id="tab-testcases">
+        <div class="test-runner-header">
+          <div class="test-status-pill" id="global-test-status">
+            <span class="status-indicator"></span>
+            <span id="global-status-text">Click "Run Code" to execute tests</span>
+          </div>
+          <div class="execution-metrics" id="execution-metrics" style="display: none;">
+            <span class="metric">Runtime: <strong id="metric-runtime">0 ms</strong></span>
+            <span class="metric">Memory: <strong id="metric-memory">14.2 MB</strong></span>
+          </div>
+        </div>
+
+        <!-- Individual Test Case Tabs -->
+        <div class="testcase-chips" id="testcase-chips">
+          <!-- Generated dynamically -->
+        </div>
+
+        <div class="testcase-content" id="testcase-content">
+          <!-- Active test case details -->
+        </div>
+      </div>
+
+      <!-- Tab Content: Big-O Complexity Inspector -->
+      <div class="tab-pane" id="tab-complexity">
+        <div class="complexity-overview-card">
+          <div class="complexity-stat">
+            <span class="complexity-label">Time Complexity</span>
+            <span class="complexity-value time" id="computed-time-complexity">O(N)</span>
+            <span class="complexity-sub" id="computed-time-sub">Linear Time (Optimal)</span>
+          </div>
+          <div class="complexity-stat">
+            <span class="complexity-label">Space Complexity</span>
+            <span class="complexity-value space" id="computed-space-complexity">O(N)</span>
+            <span class="complexity-sub" id="computed-space-sub">Hash Map Auxiliary Store</span>
+          </div>
+        </div>
+
+        <div class="complexity-breakdown">
+          <h4>Algorithmic Analysis & Recommendations</h4>
+          <div class="analysis-card" id="complexity-explanation">
+            Run your solution to generate deep AST complexity benchmarks, memory profile, and FAANG interviewer feedback.
+          </div>
+
+          <div class="big-o-comparison-grid">
+            <div class="big-o-item good">
+              <span class="tag">Optimal Target</span>
+              <strong>O(N) Time / O(N) Space</strong>
+              <p>One-pass hash table lookup strategy.</p>
+            </div>
+            <div class="big-o-item bad">
+              <span class="tag">Brute Force</span>
+              <strong>O(N²) Time / O(1) Space</strong>
+              <p>Nested loops with quadratic scaling.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content: Scorecard Summary -->
+      <div class="tab-pane" id="tab-scorecard-preview">
+        <div class="scorecard-hero">
+          <div class="score-circle">
+            <span class="score-val" id="score-val">94</span>
+            <span class="score-label">/ 100</span>
+          </div>
+          <div class="score-decision">
+            <span class="decision-pill strong-hire" id="decision-pill">STRONG HIRE</span>
+            <p id="score-summary">Outstanding algorithm design, zero edge case failures, and optimal Big-O bounds.</p>
+          </div>
+        </div>
+
+        <div class="rubric-bars">
+          <div class="rubric-item">
+            <div class="rubric-label"><span>Problem Solving</span><strong id="rubric-ps">96%</strong></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 96%;"></div></div>
+          </div>
+          <div class="rubric-item">
+            <div class="rubric-label"><span>Code Efficiency (Big-O)</span><strong id="rubric-eff">92%</strong></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 92%;"></div></div>
+          </div>
+          <div class="rubric-item">
+            <div class="rubric-label"><span>Clean Code & Modularity</span><strong id="rubric-clean">95%</strong></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 95%;"></div></div>
+          </div>
+          <div class="rubric-item">
+            <div class="rubric-label"><span>System & Edge Case Handling</span><strong id="rubric-edge">94%</strong></div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 94%;"></div></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+          <button class="btn btn-primary" onclick="InterviewForge.openFullScorecardModal()">
+            Download Candidate Scorecard
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Modal Root -->
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-window" id="modal-window">
+      <div class="modal-header">
+        <h3 id="modal-title">Evaluation Scorecard</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-content" id="modal-content"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- JavaScript -->
+  <script src="app.js"></script>
+
+</body>
+</html>
